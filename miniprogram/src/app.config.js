@@ -34,27 +34,19 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "assets/icons/home.png",
-        "selectedIconPath": "assets/icons/home-active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/trip/myTrips",
-        "text": "行程",
-        "iconPath": "assets/icons/trip.png",
-        "selectedIconPath": "assets/icons/trip-active.png"
+        "text": "行程"
       },
       {
         "pagePath": "pages/order/list",
-        "text": "订单",
-        "iconPath": "assets/icons/order.png",
-        "selectedIconPath": "assets/icons/order-active.png"
+        "text": "订单"
       },
       {
         "pagePath": "pages/user/index",
-        "text": "我的",
-        "iconPath": "assets/icons/user.png",
-        "selectedIconPath": "assets/icons/user-active.png"
+        "text": "我的"
       }
     ]
   },

@@ -1,73 +1,85 @@
-import { Component, PropsWithChildren } from 'react'
+import { Component } from 'react'
 import Taro from '@tarojs/taro'
 import { getCurrentUser } from './services/auth'
 import './app.scss'
 
-const clearAuthStorage = () => {
+function safeClearAuth() {
   try {
     Taro.removeStorageSync('token')
+  } catch (e1) {
+    console.warn('clear token err', e1)
+  }
+  try {
     Taro.removeStorageSync('userInfo')
-  } catch (e) {
-    console.warn('清除登录态失败:', e)
+  } catch (e2) {
+    console.warn('clear userInfo err', e2)
   }
 }
 
-class App extends Component<PropsWithChildren> {
+function safeGetToken() {
+  try {
+    return Taro.getStorageSync('token') || ''
+  } catch (e) {
+    return ''
+  }
+}
 
-  componentDidMount () {
-    console.log('[App] 小程序启动')
+class App extends Component {
+
+  componentDidMount() {
+    var token = safeGetToken()
+    console.log('[App] launch, token=' + (token ? 'exists' : 'empty'))
+
+    if (!token) {
+      console.log('[App] no auth, continue as guest')
+      return
+    }
 
     try {
-      const token = Taro.getStorageSync('token')
-      if (!token) {
-        console.log('[App] 无登录态，以游客身份继续')
-        return
-      }
-
       if (typeof Taro.checkSession === 'function') {
         Taro.checkSession({
-          success: async () => {
-            console.log('[App] 微信会话有效，校验后端token')
-            try {
-              const user = await getCurrentUser()
-              Taro.setStorageSync('userInfo', user)
-              console.log('[App] 后端token校验通过')
-            } catch (e) {
-              console.warn('[App] 后端token失效，清除本地登录态:', e?.message)
-              clearAuthStorage()
-            }
+          success: function () {
+            console.log('[App] wx session ok, verify backend')
+            getCurrentUser().then(function (user) {
+              if (user) {
+                try { Taro.setStorageSync('userInfo', user) } catch (e) {}
+                console.log('[App] backend auth ok')
+              }
+            }).catch(function (err) {
+              var msg = (err && err.message) || (err && err.errMsg) || 'unknown'
+              console.warn('[App] backend auth fail, clear local', msg)
+              safeClearAuth()
+            })
           },
-          fail: () => {
-            console.warn('[App] 微信会话过期，清除本地登录态')
-            clearAuthStorage()
-          }
+          fail: function () {
+            console.warn('[App] wx session expired, clear local')
+            safeClearAuth()
+          },
+          complete: function () {}
         })
       } else {
-        console.log('[App] 非微信环境，直接校验后端token')
-        getCurrentUser()
-          .then(user => {
-            Taro.setStorageSync('userInfo', user)
-          })
-          .catch(e => {
-            console.warn('[App] token校验失败，清除登录态继续进入:', e?.message)
-            clearAuthStorage()
-          })
+        console.log('[App] checkSession unavailable, verify backend directly')
+        getCurrentUser().then(function (user) {
+          if (user) {
+            try { Taro.setStorageSync('userInfo', user) } catch (e) {}
+          }
+        }).catch(function (err) {
+          var msg = (err && err.message) || (err && err.errMsg) || 'unknown'
+          console.warn('[App] verify fail, clear local, continue', msg)
+          safeClearAuth()
+        })
       }
-    } catch (e) {
-      console.error('[App] 启动异常，清除登录态:', e)
-      clearAuthStorage()
+    } catch (outerErr) {
+      console.error('[App] outer launch err, degrade', outerErr)
+      safeClearAuth()
     }
   }
 
-  componentDidShow () {}
+  componentDidShow() {}
 
-  componentDidHide () {}
+  componentDidHide() {}
 
-  componentDidCatchError (error) {
-    console.error('[App] 全局错误捕获:', error)
-  }
-
-  render () {
+  render() {
     return this.props.children
   }
 }
