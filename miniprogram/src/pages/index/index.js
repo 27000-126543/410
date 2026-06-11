@@ -1,7 +1,7 @@
 import { Component } from 'react'
-import { View, Text, ScrollView, Image, Input } from '@tarojs/components'
-import Taro, { useDidShow } from '@tarojs/taro'
-import { getTripList, searchTrips } from '../../services/trip'
+import { View, Text, Image, Input } from '@tarojs/components'
+import Taro from '@tarojs/taro'
+import { getTripList } from '../../services/trip'
 import { getUnreadCount } from '../../services/user'
 import { formatTime, getReputationLevel, formatMoney } from '../../utils'
 import './index.scss'
@@ -33,16 +33,21 @@ export default class Index extends Component {
   loadData = async () => {
     this.setState({ loading: true })
     try {
-      const [trips, unreadRes] = await Promise.all([
-        getTripList({ city: this.state.myCity, pageSize: 10 }),
-        getUnreadCount().catch(() => ({ unreadCount: 0 }))
-      ])
+      const tripsRes = await getTripList({ city: this.state.myCity, pageSize: 10 }).catch(e => {
+        console.warn('[首页] 获取行程列表失败:', e?.message)
+        return { list: [] }
+      })
+      const unreadRes = await getUnreadCount().catch(e => {
+        console.warn('[首页] 获取未读消息失败:', e?.message)
+        return { unreadCount: 0 }
+      })
       this.setState({
-        hotTrips: trips.list || [],
+        hotTrips: tripsRes?.list || [],
         unreadCount: unreadRes?.unreadCount || 0
       })
     } catch (e) {
-      console.error(e)
+      console.warn('[首页] 加载异常，降级展示:', e?.message)
+      this.setState({ hotTrips: [], unreadCount: 0 })
     }
     this.setState({ loading: false })
   }

@@ -66,20 +66,31 @@
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="priority" label="优先级" width="100">
+            <el-table-column prop="priority" label="优先级" width="90">
               <template #default="{ row }">
                 <el-tag :type="priorityMap[row.priority]?.type || 'info'">
                   {{ priorityMap[row.priority]?.label || row.priority }}
                 </el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="description" label="描述" show-overflow-tooltip />
+            <el-table-column label="投诉信息" min-width="220" show-overflow-tooltip>
+              <template #default="{ row }">
+                <div style="font-size: 13px;">
+                  <div style="font-weight: 500; color: #303133; margin-bottom: 4px;">
+                    {{ row.title || '-' }}
+                  </div>
+                  <div style="color: #909399; font-size: 12px; line-height: 1.5;">
+                    {{ (row.content || '').slice(0, 50) }}{{ (row.content || '').length > 50 ? '...' : '' }}
+                  </div>
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="createdAt" label="提交时间" width="170">
               <template #default="{ row }">
                 {{ formatDate(row.createdAt) }}
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作" width="100" fixed="right">
               <template #default="{ row }">
                 <el-button type="primary" link @click="handleComplaint(row)">处理</el-button>
               </template>
@@ -157,16 +168,20 @@ const statCards = ref([
 const pendingComplaints = ref([])
 
 const complaintTypeMap = {
-  driver: { label: '司机投诉', type: 'warning' },
-  passenger: { label: '乘客投诉', type: 'danger' },
-  system: { label: '系统问题', type: 'info' },
-  other: { label: '其他', type: 'info' }
+  attitude: { label: '态度问题', type: 'warning' },
+  punctuality: { label: '准时问题', type: 'warning' },
+  safety: { label: '安全问题', type: 'danger' },
+  cleanliness: { label: '卫生问题', type: 'info' },
+  overcharge: { label: '收费问题', type: 'danger' },
+  cancellation: { label: '取消问题', type: 'warning' },
+  other: { label: '其他问题', type: 'info' }
 }
 
 const priorityMap = {
-  high: { label: '高', type: 'danger' },
-  medium: { label: '中', type: 'warning' },
-  low: { label: '低', type: 'info' }
+  low: { label: '普通', type: 'info' },
+  normal: { label: '正常', type: '' },
+  high: { label: '高', type: 'warning' },
+  urgent: { label: '紧急', type: 'danger' }
 }
 
 const formatDate = (date) => {
@@ -174,7 +189,13 @@ const formatDate = (date) => {
 }
 
 const handleComplaint = (row) => {
-  router.push('/complaints')
+  router.push({
+    path: '/complaints',
+    query: {
+      complaintId: row.id,
+      status: row.status
+    }
+  })
 }
 
 const fetchDashboardData = async () => {
@@ -257,14 +278,31 @@ const initReputationChart = (data) => {
     reputationChart = echarts.init(reputationChartRef.value)
   }
   const levelMap = {
-    excellent: '优秀',
-    good: '良好',
-    normal: '一般',
-    poor: '较差'
+    bronze: '铜牌',
+    silver: '银牌',
+    gold: '金牌',
+    platinum: '铂金',
+    diamond: '钻石'
   }
+  const colorMap = {
+    bronze: '#CD7F32',
+    silver: '#C0C0C0',
+    gold: '#FFD700',
+    platinum: '#E5E4E2',
+    diamond: '#B9F2FF'
+  }
+  const orderedLevels = ['bronze', 'silver', 'gold', 'platinum', 'diamond']
+  const pieData = orderedLevels.map(level => {
+    const item = data.find(d => d.reputationLevel === level)
+    return {
+      value: item?.count || 0,
+      name: levelMap[level] || level,
+      itemStyle: { color: colorMap[level] }
+    }
+  })
   const option = {
-    tooltip: { trigger: 'item' },
-    legend: { bottom: '0%' },
+    tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+    legend: { bottom: '0%', data: pieData.map(d => d.name) },
     series: [
       {
         type: 'pie',
@@ -275,10 +313,7 @@ const initReputationChart = (data) => {
         emphasis: {
           label: { show: true, fontSize: 16, fontWeight: 'bold' }
         },
-        data: data.map(d => ({
-          value: d.count,
-          name: levelMap[d.reputationLevel] || d.reputationLevel
-        }))
+        data: pieData
       }
     ]
   }

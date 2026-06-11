@@ -7,22 +7,27 @@
             <el-option label="待处理" value="pending" />
             <el-option label="处理中" value="processing" />
             <el-option label="已解决" value="resolved" />
+            <el-option label="已驳回" value="rejected" />
             <el-option label="已关闭" value="closed" />
           </el-select>
         </el-form-item>
         <el-form-item label="优先级">
           <el-select v-model="searchForm.priority" placeholder="全部" clearable style="width: 120px">
+            <el-option label="普通" value="low" />
+            <el-option label="正常" value="normal" />
             <el-option label="高" value="high" />
-            <el-option label="中" value="medium" />
-            <el-option label="低" value="low" />
+            <el-option label="紧急" value="urgent" />
           </el-select>
         </el-form-item>
         <el-form-item label="投诉类型">
           <el-select v-model="searchForm.type" placeholder="全部" clearable style="width: 140px">
-            <el-option label="司机投诉" value="driver" />
-            <el-option label="乘客投诉" value="passenger" />
-            <el-option label="系统问题" value="system" />
-            <el-option label="其他" value="other" />
+            <el-option label="态度问题" value="attitude" />
+            <el-option label="准时问题" value="punctuality" />
+            <el-option label="安全问题" value="safety" />
+            <el-option label="卫生问题" value="cleanliness" />
+            <el-option label="收费问题" value="overcharge" />
+            <el-option label="取消问题" value="cancellation" />
+            <el-option label="其他问题" value="other" />
           </el-select>
         </el-form-item>
         <el-form-item label="提交时间">
@@ -47,9 +52,16 @@
     </el-card>
 
     <el-card shadow="hover" style="margin-top: 20px">
-      <el-table :data="complaintList" v-loading="loading" stripe>
-        <el-table-column prop="complaintNo" label="投诉编号" width="150" />
-        <el-table-column prop="type" label="类型" width="100">
+      <el-table
+        :data="complaintList"
+        v-loading="loading"
+        stripe
+        ref="complaintTableRef"
+        :row-key="(row) => row.id"
+        :row-class-name="rowHighlighter"
+      >
+        <el-table-column prop="complaintNo" label="投诉编号" width="160" />
+        <el-table-column prop="type" label="类型" width="110">
           <template #default="{ row }">
             <el-tag :type="typeMap[row.type]?.type || 'info'">
               {{ typeMap[row.type]?.label || row.type }}
@@ -85,7 +97,8 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="投诉内容" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="title" label="投诉标题" min-width="160" show-overflow-tooltip />
+        <el-table-column prop="content" label="投诉内容" min-width="200" show-overflow-tooltip />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="statusMap[row.status]?.type || 'info'" effect="dark">
@@ -132,7 +145,7 @@
       </div>
     </el-card>
 
-    <el-dialog v-model="detailDialogVisible" title="投诉详情" width="600px">
+    <el-dialog v-model="detailDialogVisible" title="投诉详情" width="650px">
       <el-descriptions v-if="currentComplaint" :column="2" border>
         <el-descriptions-item label="投诉编号">{{ currentComplaint.complaintNo }}</el-descriptions-item>
         <el-descriptions-item label="状态">
@@ -140,41 +153,62 @@
             {{ statusMap[currentComplaint.status]?.label || currentComplaint.status }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="类型">
+        <el-descriptions-item label="投诉类型">
           {{ typeMap[currentComplaint.type]?.label || currentComplaint.type }}
         </el-descriptions-item>
         <el-descriptions-item label="优先级">
-          {{ priorityMap[currentComplaint.priority]?.label || currentComplaint.priority }}
+          <el-tag :type="priorityMap[currentComplaint.priority]?.type || 'info'">
+            {{ priorityMap[currentComplaint.priority]?.label || currentComplaint.priority }}
+          </el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="投诉人">
-          {{ currentComplaint.complainant?.nickname }} ({{ currentComplaint.complainant?.phone }})
+          {{ currentComplaint.complainant?.nickname || '-' }}
+          ({{ currentComplaint.complainant?.phone || '-' }})
         </el-descriptions-item>
         <el-descriptions-item label="被投诉人">
-          {{ currentComplaint.respondent?.nickname || '-' }} ({{ currentComplaint.respondent?.phone || '-' }})
+          {{ currentComplaint.respondent?.nickname || '-' }}
+          ({{ currentComplaint.respondent?.phone || '-' }})
         </el-descriptions-item>
-        <el-descriptions-item label="投诉内容" :span="2">
-          {{ currentComplaint.description }}
-        </el-descriptions-item>
-        <el-descriptions-item label="证据" :span="2" v-if="currentComplaint.evidence">
-          <div v-if="typeof currentComplaint.evidence === 'string'">
-            {{ currentComplaint.evidence }}
+        <el-descriptions-item label="投诉标题" :span="2">
+          <div style="font-weight: 500; color: #303133;">
+            {{ currentComplaint.title || '-' }}
           </div>
-          <div v-else-if="Array.isArray(currentComplaint.evidence)">
+        </el-descriptions-item>
+        <el-descriptions-item label="投诉正文" :span="2">
+          <div style="white-space: pre-wrap; line-height: 1.7; color: #606266;">
+            {{ currentComplaint.content || '-' }}
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="图片证据" :span="2" v-if="currentComplaint.images && currentComplaint.images.length">
+          <div class="evidence-images">
             <el-image
-              v-for="(img, idx) in currentComplaint.evidence"
+              v-for="(img, idx) in currentComplaint.images"
               :key="idx"
               :src="img"
-              :preview-src-list="currentComplaint.evidence"
+              :preview-src-list="currentComplaint.images"
+              :initial-index="idx"
               fit="cover"
-              style="width: 100px; height: 100px; margin-right: 10px"
+              class="evidence-img"
             />
           </div>
         </el-descriptions-item>
         <el-descriptions-item label="处理结果" :span="2" v-if="currentComplaint.handleResult">
-          {{ currentComplaint.handleResult }}
+          <div style="white-space: pre-wrap; line-height: 1.7; background: #f0f9eb; padding: 10px; border-radius: 4px; color: #67c23a;">
+            {{ currentComplaint.handleResult }}
+          </div>
         </el-descriptions-item>
         <el-descriptions-item label="处理备注" :span="2" v-if="currentComplaint.handleRemark">
-          {{ currentComplaint.handleRemark }}
+          <div style="white-space: pre-wrap; line-height: 1.7; background: #fdf6ec; padding: 10px; border-radius: 4px; color: #e6a23c;">
+            {{ currentComplaint.handleRemark }}
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item label="满意度" :span="2" v-if="currentComplaint.complainantSatisfied !== null">
+          <div>
+            <span style="margin-right: 16px;">
+              {{ currentComplaint.complainantSatisfied ? '满意 ✅' : '不满意 ❌' }}
+            </span>
+            <el-rate v-if="currentComplaint.satisfactionRating" :model-value="currentComplaint.satisfactionRating" disabled />
+          </div>
         </el-descriptions-item>
         <el-descriptions-item label="提交时间">{{ formatDate(currentComplaint.createdAt) }}</el-descriptions-item>
         <el-descriptions-item label="响应时间">
@@ -187,6 +221,16 @@
           {{ currentComplaint.resolvedAt ? formatDate(currentComplaint.resolvedAt) : '-' }}
         </el-descriptions-item>
       </el-descriptions>
+      <template #footer>
+        <el-button
+          v-if="currentComplaint && (currentComplaint.status === 'pending' || currentComplaint.status === 'processing')"
+          type="warning"
+          @click="detailDialogVisible = false; openHandleDialog(currentComplaint)"
+        >
+          处理此投诉
+        </el-button>
+        <el-button @click="detailDialogVisible = false">关闭</el-button>
+      </template>
     </el-dialog>
 
     <el-dialog v-model="handleDialogVisible" title="处理投诉" width="500px">
@@ -194,18 +238,22 @@
         <el-form-item label="投诉编号">
           <span>{{ currentComplaint?.complaintNo }}</span>
         </el-form-item>
+        <el-form-item label="投诉标题">
+          <span style="color: #606266;">{{ currentComplaint?.title }}</span>
+        </el-form-item>
         <el-form-item label="处理状态">
           <el-select v-model="handleForm.status" style="width: 100%">
             <el-option label="处理中" value="processing" />
             <el-option label="已解决" value="resolved" />
+            <el-option label="已驳回" value="rejected" />
             <el-option label="已关闭" value="closed" />
           </el-select>
         </el-form-item>
-        <el-form-item label="处理结果">
-          <el-input v-model="handleForm.handleResult" type="textarea" :rows="3" placeholder="请输入处理结果" />
+        <el-form-item label="处理结果" required>
+          <el-input v-model="handleForm.handleResult" type="textarea" :rows="3" placeholder="请输入处理结果（必填）" />
         </el-form-item>
         <el-form-item label="处理备注">
-          <el-input v-model="handleForm.handleRemark" type="textarea" :rows="2" placeholder="请输入处理备注" />
+          <el-input v-model="handleForm.handleRemark" type="textarea" :rows="2" placeholder="请输入内部处理备注（选填）" />
         </el-form-item>
         <el-form-item label="用户是否满意" v-if="handleForm.status === 'resolved' || handleForm.status === 'closed'">
           <el-radio-group v-model="handleForm.complainantSatisfied">
@@ -219,19 +267,21 @@
       </el-form>
       <template #footer>
         <el-button @click="handleDialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitLoading" @click="submitHandle">提交</el-button>
+        <el-button type="primary" :loading="submitLoading" @click="submitHandle">提交处理</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Search, Refresh } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 import { getComplaintList, handleComplaint } from '@/api'
 
+const route = useRoute()
 const loading = ref(false)
 const submitLoading = ref(false)
 const complaintList = ref([])
@@ -239,6 +289,8 @@ const dateRange = ref([])
 const detailDialogVisible = ref(false)
 const handleDialogVisible = ref(false)
 const currentComplaint = ref(null)
+const complaintTableRef = ref(null)
+const highlightedComplaintId = ref(null)
 
 const searchForm = reactive({
   status: '',
@@ -261,27 +313,69 @@ const handleForm = reactive({
 })
 
 const typeMap = {
-  driver: { label: '司机投诉', type: 'warning' },
-  passenger: { label: '乘客投诉', type: 'danger' },
-  system: { label: '系统问题', type: 'info' },
-  other: { label: '其他', type: 'info' }
+  attitude: { label: '态度问题', type: 'warning' },
+  punctuality: { label: '准时问题', type: 'warning' },
+  safety: { label: '安全问题', type: 'danger' },
+  cleanliness: { label: '卫生问题', type: 'info' },
+  overcharge: { label: '收费问题', type: 'danger' },
+  cancellation: { label: '取消问题', type: 'warning' },
+  other: { label: '其他问题', type: 'info' }
 }
 
 const priorityMap = {
-  high: { label: '高', type: 'danger' },
-  medium: { label: '中', type: 'warning' },
-  low: { label: '低', type: 'info' }
+  low: { label: '普通', type: 'info' },
+  normal: { label: '正常', type: '' },
+  high: { label: '高', type: 'warning' },
+  urgent: { label: '紧急', type: 'danger' }
 }
 
 const statusMap = {
   pending: { label: '待处理', type: 'danger' },
   processing: { label: '处理中', type: 'warning' },
   resolved: { label: '已解决', type: 'success' },
+  rejected: { label: '已驳回', type: 'info' },
   closed: { label: '已关闭', type: 'info' }
 }
 
 const formatDate = (date) => {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+}
+
+const rowHighlighter = ({ row }) => {
+  if (highlightedComplaintId.value && row.id == highlightedComplaintId.value) {
+    return 'highlight-row'
+  }
+  return ''
+}
+
+const scrollToComplaint = (complaintId) => {
+  nextTick(() => {
+    setTimeout(() => {
+      highlightedComplaintId.value = complaintId
+      const idx = complaintList.value.findIndex(r => r.id == complaintId)
+      if (idx >= 0 && complaintTableRef.value) {
+        try {
+          complaintTableRef.value.setCurrentRow?.(complaintList.value[idx])
+          if (complaintTableRef.value.scrollTo) {
+            complaintTableRef.value.scrollTo({ top: idx * 48, behavior: 'smooth' })
+          }
+        } catch (e) {
+          const rows = document.querySelectorAll('.el-table__row')
+          if (rows[idx]) {
+            rows[idx].scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        }
+        setTimeout(() => {
+          highlightedComplaintId.value = null
+        }, 4000)
+      } else if (idx < 0 && complaintList.value.length === 0) {
+        ElMessage.info('暂未找到该投诉，可能已处理，请在全部状态中查看')
+      } else if (idx < 0) {
+        ElMessage.info('未在当前筛选条件中找到该投诉，已清除筛选')
+        resetSearch()
+      }
+    }, 400)
+  })
 }
 
 const fetchComplaintList = async () => {
@@ -300,6 +394,7 @@ const fetchComplaintList = async () => {
     complaintList.value = res.data.list || res.data.rows || []
     pagination.total = res.data.total || 0
   } catch (e) {
+    console.error('获取投诉列表失败:', e)
   } finally {
     loading.value = false
   }
@@ -311,6 +406,7 @@ const resetSearch = () => {
   searchForm.type = ''
   dateRange.value = []
   pagination.page = 1
+  highlightedComplaintId.value = null
   fetchComplaintList()
 }
 
@@ -331,6 +427,10 @@ const openHandleDialog = (row) => {
 
 const submitHandle = async () => {
   if (!currentComplaint.value) return
+  if (!handleForm.handleResult || handleForm.handleResult.trim() === '') {
+    ElMessage.warning('请填写处理结果')
+    return
+  }
   submitLoading.value = true
   try {
     await handleComplaint(currentComplaint.value.id, handleForm)
@@ -338,13 +438,21 @@ const submitHandle = async () => {
     handleDialogVisible.value = false
     fetchComplaintList()
   } catch (e) {
+    console.error('处理投诉失败:', e)
   } finally {
     submitLoading.value = false
   }
 }
 
-onMounted(() => {
-  fetchComplaintList()
+onMounted(async () => {
+  if (route.query.complaintId) {
+    searchForm.status = route.query.status || ''
+  }
+  await fetchComplaintList()
+
+  if (route.query.complaintId) {
+    scrollToComplaint(route.query.complaintId)
+  }
 })
 </script>
 
@@ -376,6 +484,27 @@ onMounted(() => {
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
+  }
+
+  .evidence-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .evidence-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+      border: 1px solid #ebeef5;
+      cursor: zoom-in;
+    }
+  }
+
+  :deep(.highlight-row) {
+    td {
+      background-color: #fffbe6 !important;
+      transition: background-color 0.3s ease;
+    }
   }
 }
 </style>
