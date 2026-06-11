@@ -1,0 +1,182 @@
+.review-list-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.tabs {
+  display: flex;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 28px 0;
+  font-size: 28px;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #1890ff;
+  border-radius: 2px;
+}
+
+.content {
+  height: calc(100vh - 100px);
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 0;
+  color: #1890ff;
+}
+
+.empty {
+  text-align: center;
+  padding: 120px 0;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 120px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.review-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.name {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  font-size: 28px;
+  color: #d9d9d9;
+  margin-right: 2px;
+}
+
+.star.active {
+  color: #faad14;
+}
+
+.rating-value {
+  margin-left: 8px;
+  font-size: 26px;
+  color: #faad14;
+  font-weight: bold;
+}
+
+.time {
+  font-size: 24px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.content-text {
+  font-size: 28px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 12px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.tag {
+  padding: 8px 20px;
+  background: #e6f7ff;
+  color: #1890ff;
+  border-radius: 24px;
+  font-size: 24px;
+}
+
+.reply {
+  background: #fff7e6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.reply-label {
+  font-size: 26px;
+  color: #fa8c16;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.reply-content {
+  font-size: 26px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 12px 32px;
+  background: #1890ff;
+  color: #fff;
+  border-radius: 32px;
+  font-size: 26px;
+}

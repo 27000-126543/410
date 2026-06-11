@@ -1,0 +1,33 @@
+{
+  "name": "carpool-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "社区拼车与顺风车出行管理系统",
+  "workspaces": [
+    "backend",
+    "miniprogram",
+    "admin"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "dev-backend": "npm run dev --workspace=backend",
+    "dev-miniprogram": "npm run dev:weapp --workspace=miniprogram",
+    "dev-admin": "npm run dev --workspace=admin",
+    "seed-data": "npm run seed --workspace=backend",
+    "build-miniprogram": "npm run build:weapp --workspace=miniprogram",
+    "build-admin": "npm run build --workspace=admin"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "carpool",
+    "rideshare",
+    "miniprogram",
+    "express",
+    "taro"
+  ],
+  "author": "",
+  "license": "ISC"
+}

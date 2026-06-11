@@ -1,0 +1,171 @@
+.order-list-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.tabs {
+  background: #fff;
+  padding: 0 16px;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tab-item {
+  display: inline-block;
+  padding: 28px 32px;
+  font-size: 28px;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #1890ff;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #1890ff;
+  border-radius: 2px;
+}
+
+.content {
+  height: calc(100vh - 100px);
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 0;
+  color: #1890ff;
+}
+
+.empty {
+  text-align: center;
+  padding: 120px 0;
+}
+
+.empty-icon {
+  font-size: 120px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.order-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.order-no {
+  font-size: 24px;
+  color: #999;
+}
+
+.status {
+  font-size: 26px;
+  padding: 6px 16px;
+  border-radius: 8px;
+}
+
+.status-pending { background: #fff7e6; color: #fa8c16; }
+.status-confirmed { background: #e6f7ff; color: #1890ff; }
+.status-in_progress { background: #f6ffed; color: #52c41a; }
+.status-completed { background: #f5f5f5; color: #666; }
+.status-cancelled { background: #fff1f0; color: #ff4d4f; }
+
+.route {
+  margin-bottom: 16px;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 28px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.dot.start { background: #52c41a; }
+.dot.end { background: #ff4d4f; }
+
+.line {
+  width: 2px;
+  height: 20px;
+  background: #e8e8e8;
+  margin-left: 6px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  margin-bottom: 16px;
+  font-size: 26px;
+  color: #666;
+}
+
+.price {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.payment {
+  font-size: 24px;
+  color: #999;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 10px 28px;
+  border-radius: 32px;
+  font-size: 26px;
+}
+
+.btn.primary {
+  background: #1890ff;
+  color: #fff;
+}
+
+.btn.outline {
+  background: #fff;
+  color: #1890ff;
+  border: 1px solid #1890ff;
+}

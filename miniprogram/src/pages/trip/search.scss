@@ -1,0 +1,258 @@
+.search-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.search-form {
+  background: #fff;
+  padding: 32px;
+  margin-bottom: 20px;
+}
+
+.location-row {
+  background: #f5f7fa;
+  border-radius: 16px;
+  padding: 8px 24px;
+  position: relative;
+}
+
+.location-col {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.location-col + .location-col {
+  border-top: 1px solid #e8e8e8;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.dot.green {
+  background: #52c41a;
+}
+
+.dot.red {
+  background: #ff4d4f;
+}
+
+.location-input {
+  flex: 1;
+  font-size: 30px;
+  color: #333;
+}
+
+.exchange {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: #1890ff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  background: #f5f7fa;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.date-row .icon {
+  margin-right: 16px;
+  font-size: 32px;
+}
+
+.placeholder {
+  color: #999;
+  font-size: 28px;
+}
+
+.date-text {
+  color: #333;
+  font-size: 28px;
+}
+
+.search-btn {
+  margin-top: 32px;
+  height: 96px;
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: #fff;
+  border-radius: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  font-weight: bold;
+}
+
+.favorites {
+  background: #fff;
+  padding: 24px 32px;
+  margin-bottom: 20px;
+}
+
+.favorites-title {
+  font-size: 28px;
+  color: #666;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.favorites-list {
+  white-space: nowrap;
+}
+
+.favorite-item {
+  display: inline-block;
+  background: #f5f7fa;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-right: 16px;
+  min-width: 240px;
+}
+
+.route-name {
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.route-desc {
+  font-size: 22px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.loading {
+  text-align: center;
+  padding: 80px 0;
+  color: #1890ff;
+}
+
+.empty {
+  text-align: center;
+  padding: 100px 48px;
+}
+
+.empty-icon {
+  font-size: 120px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.tip {
+  display: block;
+  margin-top: 16px;
+  font-size: 26px;
+  color: #999;
+}
+
+.result-card {
+  background: #fff;
+  margin: 0 32px 20px;
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.route {
+  margin-bottom: 20px;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 30px;
+}
+
+.point .dot {
+  margin-right: 16px;
+}
+
+.arrow-line {
+  display: flex;
+  align-items: center;
+  padding: 4px 32px;
+  color: #999;
+  font-size: 24px;
+}
+
+.arrow {
+  margin-right: 12px;
+  color: #1890ff;
+  font-size: 32px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  margin: 16px 0;
+}
+
+.time, .seats {
+  font-size: 26px;
+  color: #666;
+  margin-right: 24px;
+}
+
+.price {
+  margin-left: auto;
+  font-size: 40px;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+.driver {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.driver-info {
+  flex: 1;
+}
+
+.name {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.match-score {
+  background: #e6f7ff;
+  color: #1890ff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 24px;
+}

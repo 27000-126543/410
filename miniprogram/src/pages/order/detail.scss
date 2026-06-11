@@ -1,0 +1,246 @@
+.order-detail-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 200px;
+}
+
+.content {
+  height: calc(100vh - 200px);
+}
+
+.loading, .empty {
+  padding: 100px 0;
+  text-align: center;
+  color: #999;
+}
+
+.status-card {
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: #fff;
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.status-text {
+  display: block;
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.payment-text {
+  font-size: 28px;
+  opacity: 0.9;
+}
+
+.status-pending { color: #fffb8f; }
+.status-confirmed { color: #fff; }
+.status-completed { color: #b7eb8f; }
+.status-cancelled { color: #ffccc7; }
+
+.route-card, .user-card, .fee-card, .info-card {
+  background: #fff;
+  margin: 20px;
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 30px;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.dot.start { background: #52c41a; }
+.dot.end { background: #ff4d4f; }
+
+.point-text {
+  flex: 1;
+}
+
+.line {
+  width: 2px;
+  height: 28px;
+  background: #e8e8e8;
+  margin-left: 7px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid #f5f5f5;
+  font-size: 26px;
+  color: #666;
+}
+
+.card-title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  display: block;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: 30px;
+  font-weight: 500;
+  margin-right: 12px;
+}
+
+.role-tag {
+  background: #e6f7ff;
+  color: #1890ff;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 22px;
+  margin-left: 8px;
+}
+
+.role-tag.passenger {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+.sub {
+  font-size: 26px;
+  color: #999;
+}
+
+.divider {
+  height: 1px;
+  background: #f5f5f5;
+  margin: 20px 0;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  font-size: 28px;
+  color: #666;
+}
+
+.fee-row.total {
+  padding-top: 20px;
+  margin-top: 12px;
+  border-top: 1px solid #f5f5f5;
+  font-weight: bold;
+  color: #333;
+}
+
+.total-amount {
+  font-size: 40px;
+  color: #ff4d4f;
+  font-weight: bold;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.info-row .label {
+  font-size: 28px;
+  color: #999;
+}
+
+.info-row .value {
+  font-size: 28px;
+  color: #333;
+}
+
+.extra-actions {
+  background: #fff;
+  margin: 20px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.extra-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 30px;
+}
+
+.extra-item:last-child {
+  border-bottom: none;
+}
+
+.arrow {
+  color: #999;
+  font-size: 36px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 32px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  background: #fff;
+  display: flex;
+  gap: 16px;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.footer-btn {
+  flex: 1;
+  height: 88px;
+  border-radius: 44px;
+  font-size: 32px;
+  font-weight: bold;
+  border: none;
+}
+
+.footer-btn::after {
+  border: none;
+}
+
+.footer-btn.primary {
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  color: #fff;
+}
+
+.footer-btn.outline {
+  background: #fff;
+  color: #ff4d4f;
+  border: 2px solid #ff4d4f;
+}
